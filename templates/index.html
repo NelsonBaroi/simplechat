@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Nelson</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="profile-container">
+                <img id="profile-image" src="https://via.placeholder.com/150" alt="Profile Image">
+            </div>
+            <div class="header-text">
+                <h1 class="gradient-text">Welcome to Nelson's Chatbot</h1>
+                <p>Your personal AI assistant ready to help!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="section container">
+        <div class="chat-box" id="chat-box">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p>&copy; 2023 Nelson's Chatbot. All rights reserved.</p>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender);
+            messageElement.textContent = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to bottom
+        }
+
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input').value.trim();
+            if (!userInput) return;
+
+            // Append user's message to the chat box
+            appendMessage('user', userInput);
+
+            // Clear input field
+            document.getElementById('user-input').value = '';
+
+            // Send message to the server and get the response
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `message=${encodeURIComponent(userInput)}`
+            });
+
+            const data = await response.json();
+            appendMessage('bot', data.response);
+        }
+    </script>
+</body>
+</html>
