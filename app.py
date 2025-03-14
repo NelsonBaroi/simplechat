@@ -95,4 +95,5 @@ def chat():
 
 # Run the Flask app
 if __name__ == '__main__':
-    app.run(debug=True)
+    from os import environ
+    app.run(host="0.0.0.0", port=int(environ.get("PORT", 10000)))
